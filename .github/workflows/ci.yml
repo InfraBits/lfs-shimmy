@@ -1,0 +1,25 @@
+name: Continuous integration
+on: [pull_request]
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout source
+        uses: actions/checkout@v2
+
+      - name: Install system dependancies
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y python3 python3-pip
+
+      - name: Install python dependencies
+        run: |
+          python3 -m pip install \
+            --upgrade \
+            -r requirements.txt \
+            -r requirements-dev.txt
+
+      - name: Run flake8
+        run: |
+          python3 -m flake8 *.py
