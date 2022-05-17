@@ -49,15 +49,20 @@ app.s3 = boto3.session.Session().client(
 )
 
 
-def _build_key(org, repo, id):
+def _build_key(repo, id) -> str:
     """Generate the S3 key (path) for a given object."""
-    return f"{org}/{repo}/{id}"
+    return f"{repo}/{id}"
 
 
-def _object_exists(key):
+def _build_bucket(org) -> str:
+    """Generate the S3 bucket for a given org."""
+    return '-'.join([app.config.get("AWS_S3_BUCKET_PREFIX"), org]).lower()
+
+
+def _object_exists(org, key):
     """Verify if a given key (path) exists, using the S3 API."""
     try:
-        app.s3.head_object(Bucket=app.config.get("AWS_S3_BUCKET_NAME"),
+        app.s3.head_object(Bucket=_build_bucket(org),
                            Key=key)
     except ClientError as e:
         if e.response["Error"]["Code"] == "404":
@@ -69,10 +74,10 @@ def _object_exists(key):
 
 def _handle_object_upload(org, repo, object):
     """Generate pre-signed urls for an upload request, using the S3 API."""
-    key = _build_key(org, repo, object["oid"])
+    key = _build_key(repo, object["oid"])
     logger.info(f'Handling upload for {object["oid"]} ({key})')
     signed_url = app.s3.generate_presigned_url("put_object",
-                                               Params={"Bucket": app.config.get("AWS_S3_BUCKET_NAME"),
+                                               Params={"Bucket": _build_bucket(org),
                                                        "Key": key},
                                                ExpiresIn=120)
 
@@ -88,13 +93,13 @@ def _handle_object_upload(org, repo, object):
 
 def _handle_object_download(org, repo, object):
     """Generate pre-signed urls for a download request, using the S3 API."""
-    key = _build_key(org, repo, object["oid"])
+    key = _build_key(repo, object["oid"])
     logger.info(f'Handling download for {object["oid"]} ({key})')
-    if not _object_exists(key):
+    if not _object_exists(org, key):
         return {"code": 404, "message": "Object missing from store"}, None
 
     signed_url = app.s3.generate_presigned_url("get_object",
-                                               Params={"Bucket": app.config.get("AWS_S3_BUCKET_NAME"),
+                                               Params={"Bucket": _build_bucket(org),
                                                        "Key": key},
                                                ExpiresIn=120)
 
@@ -126,6 +131,9 @@ def verify_login(f):
         have_credentials, username, password = _get_credentials()
         if not have_credentials:
             return make_response("Unauthorized", 401)
+
+        if kwargs.get('org') not in app.config.get("AUTHORIZED_PROJECTS").split(","):
+            return make_response("Unknown Project", 404)
 
         if (
             username
@@ -188,9 +196,9 @@ def batch(org, repo):
 @verify_login
 def verify(org, repo):
     """Object verification API endpoint."""
-    key = _build_key(org, repo, request.json["oid"])
+    key = _build_key(repo, request.json["oid"])
     logger.info(f'Handling {request.json["oid"]} ({key}) verification')
-    if not _object_exists(key):
+    if not _object_exists(org, key):
         return make_response(jsonify({"message": "Object missing from store"}), 404)
     return make_response("", 200)
 
