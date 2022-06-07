@@ -1,0 +1,37 @@
+name: Release
+on: {push: {branches: [main]}}
+permissions:
+  contents: write
+  packages: write
+jobs:
+  container:
+    runs-on: ubuntu-20.04
+    steps:
+      - uses: actions/checkout@v2
+      - id: data
+        run: echo "::set-output name=release::v$(git show -s --format=%ct)"
+      - name: Build container
+        run: |
+          docker build \
+            -t ghcr.io/${GITHUB_REPOSITORY,,}:${{ steps.data.outputs.release }} \
+            -f docker/Dockerfile .
+      - name: Publish container
+        run: |
+          echo '${{ secrets.GITHUB_TOKEN }}' | docker login ghcr.io -u ${{ github.repository_owner }} --password-stdin
+          docker push ghcr.io/${GITHUB_REPOSITORY,,}:${{ steps.data.outputs.release }}
+  tag:
+    runs-on: ubuntu-20.04
+    needs: [container]
+    steps:
+      - uses: actions/checkout@v2
+      - id: data
+        run: echo "::set-output name=release::v$(git show -s --format=%ct)"
+      - name: Create GitHub release
+        uses: actions/create-release@v1
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          tag_name: ${{ steps.data.outputs.release }}
+          release_name: Release ${{ steps.data.outputs.release }}
+          draft: false
+          prerelease: false
