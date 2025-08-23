@@ -5,7 +5,7 @@ permissions:
   packages: write
 jobs:
   container:
-    runs-on: ubuntu-20.04
+    runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v2
       - id: data
@@ -20,7 +20,7 @@ jobs:
           echo '${{ secrets.GITHUB_TOKEN }}' | docker login ghcr.io -u ${{ github.repository_owner }} --password-stdin
           docker push ghcr.io/${GITHUB_REPOSITORY,,}:${{ steps.data.outputs.release }}
   tag:
-    runs-on: ubuntu-20.04
+    runs-on: ubuntu-latest
     needs: [container]
     steps:
       - uses: actions/checkout@v2
