@@ -1,0 +1,11 @@
+name: Create Release For Renovate
+on: { push: { branches: [ 'main' ] } }
+jobs:
+  renovate-release:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+    steps:
+      - uses: infrabits/ci-create-renovate-release@main
+        with:
+          github-token: ${{ secrets.GITHUB_TOKEN }}

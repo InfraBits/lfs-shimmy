@@ -1,25 +1,38 @@
 name: CI
-on: [pull_request]
-
+on: { pull_request: { } }
+concurrency:
+  group: ${{ github.head_ref || github.ref }}
+  cancel-in-progress: true
 jobs:
-  build:
+  setup-build:
+    uses: infrabits/ci-setup-tox-env/.github/workflows/setup.yml@main
+
+  execute-lint:
+    needs: [setup-build]
+    uses: infrabits/ci-run-tox-env/.github/workflows/run.yml@main
+    with:
+      environments: ${{ needs.setup-build.outputs.lint }}
+
+  execute-test:
+    needs: [setup-build]
+    uses: infrabits/ci-run-tox-env/.github/workflows/run.yml@main
+    with:
+      environments: ${{ needs.setup-build.outputs.test }}
+      install_dependencies: true
+
+  build-container:
     runs-on: ubuntu-latest
+    needs: [setup-build, execute-lint, execute-test]
+    permissions:
+      security-events: write
+      pull-requests: write
     steps:
-      - name: Checkout source
-        uses: actions/checkout@v6
+      - uses: actions/checkout@v6
 
-      - name: Install system dependancies
-        run: |
-          sudo apt-get update
-          sudo apt-get install -y python3 python3-pip
-
-      - name: Install python dependencies
-        run: |
-          python3 -m pip install \
-            --upgrade \
-            -r requirements.txt \
-            -r requirements-dev.txt
-
-      - name: Run flake8
-        run: |
-          python3 -m flake8 *.py
+      - name: Build container
+        uses: infrabits/ci-pack@main
+        with:
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+          image: ghcr.io/${{ github.repository }}:${{ github.sha }}
+          use_builder: upstream
+          publish_image: false
