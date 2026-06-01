@@ -5,17 +5,17 @@ concurrency:
   cancel-in-progress: true
 jobs:
   setup-build:
-    uses: infrabits/ci-setup-tox-env/.github/workflows/setup.yml@main
+    uses: infrabits/ci-setup-tox-env/.github/workflows/setup.yml@aa418d4e361749a9b3dffc179ed7ceb3e8f9e020 # main
 
   execute-lint:
     needs: [setup-build]
-    uses: infrabits/ci-run-tox-env/.github/workflows/run.yml@main
+    uses: infrabits/ci-run-tox-env/.github/workflows/run.yml@db9f407c599e1918d81be8f3d7f44f2e5d04b5b8 # main
     with:
       environments: ${{ needs.setup-build.outputs.lint }}
 
   execute-test:
     needs: [setup-build]
-    uses: infrabits/ci-run-tox-env/.github/workflows/run.yml@main
+    uses: infrabits/ci-run-tox-env/.github/workflows/run.yml@db9f407c599e1918d81be8f3d7f44f2e5d04b5b8 # main
     with:
       environments: ${{ needs.setup-build.outputs.test }}
       install_dependencies: true
@@ -27,10 +27,10 @@ jobs:
       security-events: write
       pull-requests: write
     steps:
-      - uses: actions/checkout@v6
+      - uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6
 
       - name: Build container
-        uses: infrabits/ci-pack@main
+        uses: infrabits/ci-pack@e6fda6bd38b30aed25d3203d7559b756d75d884c # main
         with:
           github-token: ${{ secrets.GITHUB_TOKEN }}
           image: ghcr.io/${{ github.repository }}:${{ github.sha }}
