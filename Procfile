@@ -1,1 +1,1 @@
-run /opt/lfs-shimmy/app.py
+run: python -m fastapi run lfs_shimmy/server.py
