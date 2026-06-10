@@ -9,13 +9,13 @@ jobs:
 
   execute-lint:
     needs: [setup-build]
-    uses: infrabits/ci-run-tox-env/.github/workflows/run.yml@db9f407c599e1918d81be8f3d7f44f2e5d04b5b8 # main
+    uses: infrabits/ci-run-tox-env/.github/workflows/run.yml@19f9bbd03df394ba63d7644e7afa80dcf6adfb2a # main
     with:
       environments: ${{ needs.setup-build.outputs.lint }}
 
   execute-test:
     needs: [setup-build]
-    uses: infrabits/ci-run-tox-env/.github/workflows/run.yml@db9f407c599e1918d81be8f3d7f44f2e5d04b5b8 # main
+    uses: infrabits/ci-run-tox-env/.github/workflows/run.yml@19f9bbd03df394ba63d7644e7afa80dcf6adfb2a # main
     with:
       environments: ${{ needs.setup-build.outputs.test }}
       install_dependencies: true
