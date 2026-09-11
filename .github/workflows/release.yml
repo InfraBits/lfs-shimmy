@@ -4,7 +4,7 @@ jobs:
   setup-build:
     permissions:
       contents: read
-    uses: infrabits/ci-generate-version/.github/workflows/from-git.yml@6ab2e5689783fe4dfdd4bbe0767cde6890965e9b # main
+    uses: infrabits/ci-generate-version/.github/workflows/from-git.yml@ed633d7ea32bb24ce7c172d226f1cafb5512842a # main
 
   build-container:
     runs-on: ubuntu-latest
