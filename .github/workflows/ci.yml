@@ -5,7 +5,7 @@ concurrency:
   cancel-in-progress: true
 jobs:
   setup-build:
-    uses: infrabits/ci-setup-tox-env/.github/workflows/setup.yml@541da38f95bc05d926ce24f5c5bcf3951907dabd # main
+    uses: infrabits/ci-setup-tox-env/.github/workflows/setup.yml@d891f9fae4be88c3a5d87a662b935b4f1c8d8a19 # main
 
   execute-lint:
     needs: [setup-build]
