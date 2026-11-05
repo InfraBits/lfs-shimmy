@@ -1694,14 +1694,14 @@ files = [
 
 [[package]]
 name = "tox"
-version = "4.67.9"
+version = "4.67.11"
 description = "tox is a generic virtualenv management and test command line tool"
 optional = false
 python-versions = ">=3.11"
 groups = ["test"]
 files = [
-    {file = "tox-4.67.9-py3-none-any.whl", hash = "sha256:c293c803a5fcfcb84736dc1e6c9e149d7cf9e28d60b03dd9c25306592ceb8849"},
-    {file = "tox-4.67.9.tar.gz", hash = "sha256:053f1f66c2747339e75ffd68a1aae67115b2d83358764b9e095c07e845faf13d"},
+    {file = "tox-4.67.11-py3-none-any.whl", hash = "sha256:a5760a98d440ef74321ab9c4d094f0a9071ed7f1f78e39c203f42dd694d5251f"},
+    {file = "tox-4.67.11.tar.gz", hash = "sha256:9040a61d57304159fd2cbd726469c2a7cd513a8c669069433392eab1a756f344"},
 ]
 
 [package.dependencies]
