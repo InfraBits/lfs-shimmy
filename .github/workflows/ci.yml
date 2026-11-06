@@ -5,17 +5,17 @@ concurrency:
   cancel-in-progress: true
 jobs:
   setup-build:
-    uses: infrabits/ci-setup-tox-env/.github/workflows/setup.yml@24df2aaf6751d405fc81ab730fcefabe4e0bbab9 # main
+    uses: infrabits/ci-setup-tox-env/.github/workflows/setup.yml@b2d4f67c809423d364e800630fa6919868e903f5 # v1.8.0
 
   execute-lint:
     needs: [setup-build]
-    uses: infrabits/ci-run-tox-env/.github/workflows/run.yml@a574a8250345b3ea42f265ddff4c933924ee71c3 # main
+    uses: infrabits/ci-run-tox-env/.github/workflows/run.yml@37fc7f6fd3377207ade86db0056d1a826f61e278 # v1.4.0
     with:
       environments: ${{ needs.setup-build.outputs.lint }}
 
   execute-test:
     needs: [setup-build]
-    uses: infrabits/ci-run-tox-env/.github/workflows/run.yml@a574a8250345b3ea42f265ddff4c933924ee71c3 # main
+    uses: infrabits/ci-run-tox-env/.github/workflows/run.yml@37fc7f6fd3377207ade86db0056d1a826f61e278 # v1.4.0
     with:
       environments: ${{ needs.setup-build.outputs.test }}
       install_dependencies: true
@@ -30,7 +30,7 @@ jobs:
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7
 
       - name: Build container
-        uses: infrabits/ci-pack@37a6e27040b7c96ea7f0a8440c9651463975ca39 # main
+        uses: infrabits/ci-pack@bf407e73b2a7f1a223f072b7a2a2d6cc3028b70a # v2.6.0
         with:
           github-token: ${{ secrets.GITHUB_TOKEN }}
           image: ghcr.io/${{ github.repository }}:${{ github.sha }}
