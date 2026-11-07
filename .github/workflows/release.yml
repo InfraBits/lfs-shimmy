@@ -4,7 +4,7 @@ jobs:
   setup-build:
     permissions:
       contents: read
-    uses: infrabits/ci-generate-version/.github/workflows/from-git.yml@f11556de338469481e731a580ccfb138b535d09f # v1.6.0
+    uses: infrabits/ci-generate-version/.github/workflows/from-git.yml@2601904e35306592d60327adc031005e56271ffe # v1.8.0
 
   build-container:
     runs-on: ubuntu-latest
@@ -18,7 +18,7 @@ jobs:
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7
 
       - name: Build container
-        uses: infrabits/ci-pack@bf407e73b2a7f1a223f072b7a2a2d6cc3028b70a # v2.6.0
+        uses: infrabits/ci-pack@3a88fca6bcda5a70548567f83e71c80afff792c1 # v2.8.0
         with:
           github-token: ${{ secrets.GITHUB_TOKEN }}
           image: ghcr.io/${{ github.repository }}:${{ needs.setup-build.outputs.version }}
@@ -30,7 +30,7 @@ jobs:
     needs: [setup-build, build-container]
     steps:
       - name: Create GitHub release
-        uses: infrabits/ci-create-missing-release@3f8ef523315c884faaffc860dbdb2ed28791037e # v1.4.0
+        uses: infrabits/ci-create-missing-release@9be5b1cb5cae1e62c560c6a1efde7172f2688817 # v1.6.0
         with:
           github-token: ${{ secrets.GITHUB_TOKEN }}
           tag: ${{ needs.setup-build.outputs.version }}
