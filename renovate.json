@@ -2,24 +2,20 @@
   "$schema": "https://docs.renovatebot.com/renovate-schema.json",
   "extends": [
     "config:recommended",
-    "helpers:pinGitHubActionDigests",
-    "group:allNonMajor"
+    "helpers:pinGitHubActionDigests"
   ],
   "automerge": true,
   "automergeStrategy": "rebase",
   "packageRules": [
     {
-      "dependencyDashboardApproval": true,
-      "matchUpdateTypes": [
-        "major"
-      ]
+      "description": "Group CI updates",
+      "matchManagers": ["github-actions"],
+      "groupName": "CI dependencies"
     },
     {
-      "description": "Batch dev/test dependencies into a single weekly PR",
-      "matchManagers": ["poetry", "pep621"],
-      "matchDepTypes": ["test", "dev"],
-      "groupName": "dev dependencies",
-      "schedule": ["* * * * 1"]
+      "description": "Group Python updates",
+      "matchManagers": ["poetry", "pep621", "pip_requirements", "pyenv"],
+      "groupName": "Python dependencies"
     }
   ]
 }
